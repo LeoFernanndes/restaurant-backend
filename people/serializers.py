@@ -2,16 +2,17 @@ import traceback
 from rest_framework import serializers
 from rest_framework.serializers import raise_errors_on_nested_writes
 from rest_framework.utils import model_meta
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from people.models import Customer
+from people.models import User
 
 
-class CustomerSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = Customer
-        fields = '__all__'
+        model = User
+        fields = ['username', 'email', 'password', 'first_name', 'last_name']
 
     def create(self, validated_data):
         """
@@ -30,6 +31,8 @@ class CustomerSerializer(serializers.ModelSerializer):
         If you want to support writable nested relationships you'll need
         to write an explicit `.create()` method.
         """
+        validated_data['is_active'] = True
+
         raise_errors_on_nested_writes('create', self, validated_data)
 
         ModelClass = self.Meta.model
@@ -72,3 +75,13 @@ class CustomerSerializer(serializers.ModelSerializer):
                 field.set(value)
 
         return instance
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    user = serializers.SerializerMethodField()
+
+    def validate(self, attrs):
+        data = super(CustomTokenObtainPairSerializer, self).validate(attrs)
+        user_data = UserSerializer().to_representation(self.user)
+        data.update({"user": user_data})
+        return data
