@@ -9,10 +9,11 @@ from people.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    role = serializers.CharField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'first_name', 'last_name']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'role']
 
     def create(self, validated_data):
         """
@@ -75,6 +76,12 @@ class UserSerializer(serializers.ModelSerializer):
                 field.set(value)
 
         return instance
+
+
+class UpdateUserRoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['role']
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
