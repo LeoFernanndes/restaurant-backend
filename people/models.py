@@ -9,7 +9,7 @@ ROLES = (
     ("customer", "customer")
 )
 
-
 class User(AbstractUser):
     cpf = models.CharField(max_length=11)
     role = models.CharField(max_length=30, choices=ROLES, default="customer")
+
