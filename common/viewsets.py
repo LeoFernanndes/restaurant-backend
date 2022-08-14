@@ -1,11 +1,14 @@
 from rest_framework import viewsets, exceptions
+from rest_framework.permissions import IsAuthenticated
 
 from common.models import PersonAddress
 from common.serializers import PersonAddressSerializer, PersonAddressCreateSerializer, PersonAddressUpdateSerializer
+from common.permissions import PersonAddressCrudPermission
 from people.models import User
 
 
 class PersonAddressViewset(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, PersonAddressCrudPermission]
 
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):

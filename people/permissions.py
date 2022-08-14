@@ -3,7 +3,7 @@ from rest_framework.permissions import BasePermission
 
 class UpdateUserRolePermission(BasePermission):
     def has_permission(self, request, view):
-        if request.user.role == 'admin':
+        if request.user.role in ['admin', 'super_admin']:
             return True
         return False
 

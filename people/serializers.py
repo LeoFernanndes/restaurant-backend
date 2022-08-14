@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'role']
+        fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name', 'role']
 
     def create(self, validated_data):
         """
@@ -79,6 +79,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UpdateUserRoleSerializer(serializers.ModelSerializer):
+    ROLES = (
+        ("admin", "admin"),
+        ("restaurant_admin", "restaurant_admin"),
+        ("customer", "customer")
+    )
+
+    role = serializers.ChoiceField(ROLES)
     class Meta:
         model = User
         fields = ['role']
